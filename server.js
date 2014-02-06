@@ -17,6 +17,12 @@ var app = express();
 app.get('/', function(req,res) {
   res.send(JSON.stringify(loki.getServers()));
 });
+app.get('/servers', function(req,res) {
+  res.send(JSON.stringify(loki.getServers()));
+});
+app.get('/channels', function(req,res) {
+  res.send(JSON.stringify(loki.getChannels(req.query.server)));
+});
 app.get('/fetch', function(req,res) {
   res.send(req.query.server + ' ' + req.query.channel);
 });
