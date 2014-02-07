@@ -1,0 +1,9 @@
+{
+  "unused": false,
+  "globals": { 
+  	"$": true,
+  	"console": true,
+  	"window":true,
+  	"alert": true
+  }
+}

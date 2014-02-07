@@ -13,18 +13,24 @@ var loki = require('./loki.js').create();
 
 
 var app = express();
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+});
+app.use(express.static(__dirname + '/frontend'));
 
 app.get('/', function(req,res) {
-  res.send(JSON.stringify(loki.getServers()));
+  res.redirect('/frontend/index.html');
 });
 app.get('/servers', function(req,res) {
-  res.send(JSON.stringify(loki.getServers()));
+  res.json(JSON.stringify(loki.getServers()));
 });
 app.get('/channels', function(req,res) {
-  res.send(JSON.stringify(loki.getChannels(req.query.server)));
+  res.json(JSON.stringify(loki.getChannels(req.query.server)));
 });
-app.get('/fetch', function(req,res) {
-  res.send(req.query.server + ' ' + req.query.channel);
+app.get('/messages', function(req,res) {
+  res.json(JSON.stringify(loki.getMessages(req.query.server, req.query.channel)));
 });
 
 app.listen(3001);
@@ -36,11 +42,11 @@ console.log(v);
 
 
 
-  var client = new irc.Client('irc.freenode.net', 'mothibotti', {
-    channels: ['#testisbest'],
-  });
+var client = new irc.Client('irc.freenode.net', 'mothibotti', {
+  channels: ['#testisbest'],
+});
 
-  client.addListener('message',function(from, to, message) {
-    loki.addMessage(client.opt.server, from, to, message);
-    console.log(loki.getMessages(client.opt.server, to));
-  });
+client.addListener('message',function(from, to, message) {
+  loki.addMessage(client.opt.server, from, to, message);
+  console.log(loki.getMessages(client.opt.server, to));
+});
