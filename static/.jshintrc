@@ -4,6 +4,7 @@
   	"$": true,
   	"console": true,
   	"window":true,
-  	"alert": true
+  	"alert": true,
+  	"exports": true
   }
 }
