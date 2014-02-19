@@ -1,35 +1,31 @@
 
 'use strict';
 
-var syncarray = syncarray || {};
+var syncList = syncList || {};
 var ircIndex = ircIndex || {};
 
 var ib = (function() {
 	var my = {};
 	var server = '../';
-	var events = {};
-	var index = {};
-	my.fetchAll = function() {
-		$.post(server, {request: 'fetch all'}).done(function(data) {
-			events = syncarray.create().fromJSON(data);
-			index = ircIndex(events);
-		});
-	};
+	var events = syncList.create();
+	var index = ircIndex(events);
 	my.fetchNew = function() {
 		$.post(server, {request: 'fetch new', latest: events.size()}).done(function(data) {
 			events.addElements(data);
-			index = ircIndex(events);
 		});
 	};
 	my.print = function() {
 		console.log(events.size());
 	};
+	my.getIndexed = function () {
+		return index;
+	}
 	return my;
 })();
 
-// $(document).ready(function() {
-// 	ib.getServers();
-// });
+$(document).ready(function() {
+	setInterval(ib.fetchNew, 1000);
+});
 
 // $('body').on('click', '.server', function() {
 // 	ib.loadChannels($(this).text());

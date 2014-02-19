@@ -1,6 +1,6 @@
 'use strict';
 
-var ircIndex = function(eventsIn) {
+var ircIndex = function(eventsList) {
   var my = {};
 
   var servers = [];
@@ -9,8 +9,6 @@ var ircIndex = function(eventsIn) {
 
   var queriers = {}; // Contains a list of nick's that have queried you
   var queryEvents = {};
-
-  var events = eventsIn;
 
   var addServer = function (server) {
     servers.push(server);  //list the server
@@ -73,10 +71,44 @@ var ircIndex = function(eventsIn) {
       return queriers[server];
   };
 
+  my.print = function() {
+    console.log(servers);
+    console.log(channels);
+    console.log(chanEvents);
+  };
+
+
+
   //add the input events' indices to the system
-  for (var i = 0; i < events.size(); i++) {
-    addEvent(i, events.get(i));
-  }
+  var rebuild = function() {
+    for (var i = 0; i < eventsList.size(); i++) {
+      addEvent(i, eventsList.get(i));
+    }
+  };
+
+  rebuild();
+  //Subscribe to the notifications from the eventslist
+  eventsList.addObserver(my);
+
+  my.notify = function(data) {
+    if (!data) {
+      rebuild();
+      return;
+    }
+    addEvent(data.index, data.data);
+  };
+
+  var observers = [];
+
+  var notifyObservers = function(data) {
+    observers.each(function(observer) {
+      observer.notify(data);
+    });
+  };
+
+  my.addObserver = function(newObserver) {
+    observers.push(newObserver);
+  };
 
   return my;
 };

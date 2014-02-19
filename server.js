@@ -2,7 +2,7 @@
 
 var irc = require('irc');
 var express = require('express');
-var syncarray = require('./static/syncarray.js').create();
+var syncList = require('./static/syncList.js').create();
 
 // var PushBullet = require('pushbullet');
 // var pusher = new PushBullet('OVljgEN2Nep9PlQDYDW2K5OirKViNu93');
@@ -25,19 +25,20 @@ app.use(express.static(__dirname + '/static'));
 app.get('/', function(req,res) {
   res.redirect('/static/index.html');
 });
+
+//**
+//* Handle the requests from the clients.
 app.post('/', function(req,res) {
   var data = req.body;
-  if(data.request == 'fetch all')
-    res.json(syncarray.toJSON());
   if(data.request == 'fetch new') {
-    res.json(syncarray.getNew(data.latest));
+    res.json(syncList.elementsAfter(data.latest));
   }
 });
 
 app.listen(3001);
 
 setInterval( function() {
-  syncarray.add({
+  syncList.add({
    date: new Date().toJSON,
    server: 'irc.under.web',
    type: 'message',
@@ -51,7 +52,7 @@ var client = new irc.Client('irc.freenode.net', 'mothibotti', {
 });
 
 client.addListener('message',function(from, to, message) {
-  syncarray.add({
+  syncList.add({
    date: new Date().toJSON,
    server: client.opt.server,
    who: from,
