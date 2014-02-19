@@ -7,7 +7,7 @@
     var elements = [];
     var tally = 0;
 
-    my.latest = function() {
+    my.size = function() {
       return tally;
     };
 
@@ -21,12 +21,23 @@
       return elements[index];
     };
 
-    my.getElements = function(low, high) {
-      high = (high >= 0) ? high : tally;
-      low = (low >= 0) ? low : 0;
+    my.addElements = function(indexedElements) {
+      for (var i = 0; i < indexedElements.length; i++) {
+        var index = indexedElements[i].index;
+        var data = indexedElements[i].data;
+        elements[index] = data;
+        while (elements[tally + 1] !== undefined) {
+          tally = tally + 1;
+          }
+        }
+    };
+
+    my.getNew = function(latest) {
+      if(latest >= tally || latest < 0)
+        return;
       var es = [];
-      for (var i = low; i <= high; i++) {
-        es.push(elements[i]);
+      for (var i = latest; i <= tally; i++) {
+        es.push({index: i, data: elements[i]});
       }
       return es;
     };

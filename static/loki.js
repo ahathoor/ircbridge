@@ -74,8 +74,7 @@ var ircIndex = function(eventsIn) {
   };
 
   //add the input events' indices to the system
-  for (var i = 0; i < events.latest(); i++) {
-    console.log('added event')
+  for (var i = 0; i < events.size(); i++) {
     addEvent(i, events.get(i));
   }
 

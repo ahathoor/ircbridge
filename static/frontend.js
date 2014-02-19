@@ -9,17 +9,20 @@ var ib = (function() {
 	var server = '../';
 	var events = {};
 	var index = {};
-	var fetchAll = function() {
+	my.fetchAll = function() {
 		$.post(server, {request: 'fetch all'}).done(function(data) {
 			events = syncarray.create().fromJSON(data);
 			index = ircIndex(events);
 		});
 	};
-	var pollLatest = function() {
-		$.post(server, {request: 'fetch all'}).done(function(data) {
-			events = syncarray.create().fromJSON(data);
+	my.fetchNew = function() {
+		$.post(server, {request: 'fetch new', latest: events.size()}).done(function(data) {
+			events.addElements(data);
 			index = ircIndex(events);
 		});
+	};
+	my.print = function() {
+		console.log(events.size());
 	};
 	return my;
 })();

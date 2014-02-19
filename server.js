@@ -27,12 +27,16 @@ app.get('/', function(req,res) {
 });
 app.post('/', function(req,res) {
   var data = req.body;
-  if(data)
+  if(data.request == 'fetch all')
     res.json(syncarray.toJSON());
+  if(data.request == 'fetch new') {
+    res.json(syncarray.getNew(data.latest));
+  }
 });
 
 app.listen(3001);
 
+setInterval( function() {
   syncarray.add({
    date: new Date().toJSON,
    server: 'irc.under.web',
@@ -40,7 +44,7 @@ app.listen(3001);
    who: 'theBuddha',
    where: '#aum',
    payload: 'I love you'});
-
+},1000);
 
 var client = new irc.Client('irc.freenode.net', 'mothibotti', {
   channels: ['#testisbest'],
